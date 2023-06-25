@@ -1,0 +1,25 @@
+# Building stage
+FROM quay.io/drsylent/cubix/block2/optional-base:ubuntu23 AS builder
+
+USER root
+RUN mkdir /opt/build
+WORKDIR /opt/build
+
+COPY .mvn .mvn
+COPY src src
+COPY mvnw .
+COPY pom.xml .
+
+RUN apt -y update
+RUN apt -y install openjdk-17-jre
+
+RUN --mount=type=cache,target=/root/.m2 ./mvnw clean verify
+RUN rm -rf /var/lib/apt/lists/*
+
+# Packaging stage
+FROM eclipse-temurin:17-jre
+RUN mkdir /opt/app && chown 1001 -R /opt/app
+USER 1001
+WORKDIR /opt/app
+COPY --chown=1001 --from=builder /opt/build/target/*.jar app.jar
+CMD ["java", "-jar", "app.jar"]

@@ -22,8 +22,7 @@ public class FrontendController {
     private final BackendApi api;
     private final String defaultMessage;
 
-    public FrontendController(BackendApi api,
-                              @Value("${frontend.default.message}") String defaultMessage) {
+    public FrontendController(BackendApi api, @Value("${frontend.default.message}") String defaultMessage) {
         this.api = api;
         this.defaultMessage = defaultMessage;
     }
@@ -51,6 +50,7 @@ public class FrontendController {
 
         FrontendResponse frontendResponse = new FrontendResponse(timeBetween.abs().toMillis(), message, backendResponse.source());
         LOGGER.info("Response will be: {}", frontendResponse);
+
         return frontendResponse;
     }
 }
