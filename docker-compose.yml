@@ -4,6 +4,12 @@ services:
 
   backend-opt-app:
     image: quay.io/drsylent/cubix/block2/optional-backend:springboot3
+    volumes:
+      - type: bind
+        source: ./backendconfig
+        target: /optconfig
+    environment:
+      - SPRING_CONFIG_LOCATION=file:/optconfig/opt_application.properties
 
   frontend-opt-app:
     image: frontendsb3:v1.0.0
@@ -11,10 +17,7 @@ services:
       - backend-opt-app
     ports:
       - 8080:8080
-    volumes:
-      - ./backendconfig:/optconfig
     environment:
       - JAVA_OPTS=${JAVA_OPTS}
       - JAR_ARGS=${JAR_ARGS}
       - BACKEND_URL=http://backend-opt-app:8080
-      - SPRING_CONFIG_LOCATION=file:/optconfig/opt_application.properties
