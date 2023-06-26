@@ -28,4 +28,4 @@ LABEL image.builder="${IMAGE_BUILDER}"
 WORKDIR /opt/app
 COPY --chown=1001 --from=builder /opt/build/target/*.jar app.jar
 
-ENTRYPOINT [ "java", "${JAVA_OPTS}", "-jar", "app.jar", "${JAR_ARGS}" ]
+ENTRYPOINT exec java $JAVA_OPTS -jar app.jar $JAR_ARGS
