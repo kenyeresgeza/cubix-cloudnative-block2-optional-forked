@@ -1,0 +1,4 @@
+JAVA_OPTS=-Dfrontend.default.message=optional_task
+JAR_ARGS=--spring.main.banner-mode=off
+BACKEND_URL=http://backend-opt-app:8080
+SPRING_CONFIG_LOCATION=file:///backendconfig/application.properties
