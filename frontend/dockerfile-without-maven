@@ -1,16 +1,10 @@
-FROM quay.io/drsylent/cubix/block2/optional-base:ubuntu23   
-
-USER root
-RUN mkdir /opt/app && chown root -R /opt/app
+FROM quay.io/drsylent/cubix/block2/optional-base:ubuntu23
 
 ARG IMAGE_BUILDER
 LABEL image.builder="${IMAGE_BUILDER}"
 
-RUN apt -y update
-RUN apt -y install openjdk-17-jre
-
-RUN apt -y autoremove
-RUN rm -rf /var/lib/apt/lists/*
+USER root
+RUN mkdir /opt/app && chown root -R /opt/app && apt -y update && apt -y install openjdk-17-jre && apt -y autoremove && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /opt/app
 
