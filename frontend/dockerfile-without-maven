@@ -1,10 +1,18 @@
 FROM quay.io/drsylent/cubix/block2/optional-base:ubuntu23   
 
-FROM eclipse-temurin:17-jre
-RUN mkdir /opt/app && chown 1001 -R /opt/app
+USER root
+RUN mkdir /opt/app && chown root -R /opt/app
 
-USER 1001
+ARG IMAGE_BUILDER
+LABEL image.builder="${IMAGE_BUILDER}"
+
+RUN apt -y update
+RUN apt -y install openjdk-17-jre
+
+RUN apt -y autoremove
+RUN rm -rf /var/lib/apt/lists/*
+
 WORKDIR /opt/app
 
-COPY --chown=1001 target/*.jar app.jar
-CMD ["java", "-jar", "app.jar"]
+COPY --chown=root target/*.jar app.jar
+ENTRYPOINT exec java $JAVA_OPTS -jar app.jar $JAR_ARGS

@@ -1,5 +1,5 @@
 # Building stage
-FROM quay.io/drsylent/cubix/block2/optional-base:ubuntu23 AS builder
+FROM openjdk:17-jdk-slim AS builder
 
 USER root
 RUN mkdir /opt/build
@@ -10,22 +10,26 @@ COPY src src
 COPY mvnw .
 COPY pom.xml .
 
-RUN apt -y update
-RUN apt -y install openjdk-17-jre
-
 RUN --mount=type=cache,target=/root/.m2 ./mvnw clean verify
 RUN rm -rf /var/lib/apt/lists/*
 
 # Packaging stage
-FROM eclipse-temurin:17-jre
-RUN mkdir /opt/app && chown 1001 -R /opt/app
+FROM quay.io/drsylent/cubix/block2/optional-base:ubuntu23
+
+USER root
+RUN mkdir /opt/app && chown root -R /opt/app
+
+RUN apt -y update
+RUN apt -y install openjdk-17-jre
+
+RUN rm -rf /var/lib/apt/lists/*
+RUN apt -y autoremove
 
 EXPOSE 8080
-USER 1001
 ARG IMAGE_BUILDER
 LABEL image.builder="${IMAGE_BUILDER}"
 
 WORKDIR /opt/app
-COPY --chown=1001 --from=builder /opt/build/target/*.jar app.jar
+COPY --chown=root --from=builder /opt/build/target/*.jar app.jar
 
 ENTRYPOINT exec java $JAVA_OPTS -jar app.jar $JAR_ARGS

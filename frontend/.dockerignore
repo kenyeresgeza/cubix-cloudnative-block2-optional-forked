@@ -1,0 +1,10 @@
+node_modules
+Dockerfile*
+.iml
+.git
+.github
+.gitignore
+dist/**
+.sonar/
+.sonarlint/
+README.md
